@@ -30,16 +30,25 @@
 				width:function(d){return (w/monthlySales.length)-padding;},
 				height:function(d){return d*4},
 				"fill":"#aaa"
-			});
-			var text =svg.selectAll("text")
-							.data(monthlySales)
-							.enter()
-							.append("text")
-							.text(function(d){return d})
+			})
+			.on("mouseover",function(d){
+				var text =svg.append("text")
+							//.selectAll("text")//to be converted to append
+							//.data(monthlySales) //not required as it takes from the parent
+							//.enter()//is to be removed
+							//.append("text")//to be removed as already appended
+							.text(d)
 							.attr({
-								x:function(d,i){return (i*(w/monthlySales.length));},
-								y:function(d){ return h; }
-							});
+								"text-anchor":"middle",
+								x:parseFloat(d3.select(this).attr("x"))+parseFloat(d3.select(this).attr("width")/2),
+								y:parseFloat(d3.select(this).attr("y")),
+								id:"tooltip"
+							})
+			})
+			.on("mouseout",function(){
+				d3.select("#tooltip").remove();
+			});
+			
 	</script>
 </body>
 </html>

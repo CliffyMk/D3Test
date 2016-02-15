@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title></title>
+	<link rel="stylesheet" href="">
+	<script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+</head>
+<body>
+	<script>
+	var w=400;
+	var h=400;
+	var padding=15;
+	var monthlySales=[
+		{"month":1,"sales":200},
+		{"month":2,"sales":130},
+		{"month":3,"sales":250},
+		{"month":4,"sales":60},
+		{"month":5,"sales":210},
+		{"month":6,"sales":150},
+		{"month":7,"sales":220},
+		{"month":8,"sales":90},
+		{"month":9,"sales":230},
+		{"month":10,"sales":70},
+		{"month":11,"sales":170},
+		{"month":12,"sales":50},
+		];
+		var xScale=d3.scale.linear().domain([
+										d3.min(monthlySales,function(d){return d.month;}),
+										d3.max(monthlySales,function(d){return d.month;})
+									])
+									.range([padding,w-padding]);
+		var yScale=d3.scale.linear()
+								.domain([0,d3.max(monthlySales,function(d){return d.sales}),])
+								.range([h,padding]);
+
+
+		var svg=d3.select("body").append("svg")
+					.attr({
+						x:0,
+						y:0,
+						height:h,
+						width:w
+					});
+		var lineFun=d3.svg.line()
+		.x(function(d){return xScale(d.month)})
+		.y(function(d){return yScale(d.sales)})
+		.interpolate("linear");
+
+// displaying the line in the chart
+		var line=svg.append("path")
+			.attr({
+				d:lineFun(monthlySales),
+				"stroke":"purple",
+				"stroke-width":2,
+				"fill":"none"
+			});
+			// displaying circles in the graph
+		var scatteredPlot=svg.selectAll("circle")
+			.data(monthlySales)
+			.enter()
+			.append("circle")
+			.attr({
+				cx:function(d,i){return xScale(d.month)},
+				cy:function(d){return yScale(d.sales)},
+				r:5,
+				"fill":"blue"
+			});
+			// displaying text in the chart
+			var text=svg.selectAll("text")
+			.data(monthlySales)
+			.enter()
+			.append("text")
+			.text(function(d){return d.sales})
+			.attr({
+				x:function(d){return xScale(d.month)},
+				y:function(d){return yScale(d.sales)}	
+			})
+	</script>
+</body>
+</html>
