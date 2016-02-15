@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title></title>
+	<link rel="stylesheet" href="">
+	<script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+</head>
+<body>
+	<script>
+		var h=300; 
+		var w=500;
+		var monthlySales=[
+		{"month":10,"sales":200},
+		{"month":20,"sales":130},
+		{"month":30,"sales":250},
+		{"month":40,"sales":60},
+		{"month":50,"sales":210},
+		{"month":60,"sales":150},
+		{"month":70,"sales":220},
+		{"month":80,"sales":90},
+		{"month":90,"sales":230},
+		{"month":100,"sales":70},
+		];
+		function salesKPI(sales){
+			if(sales<200){
+				return "#333";
+			}
+			if(sales>200){
+				return "red";
+			}
+		}
+		var svg=d3.select("body").append("svg")
+		.attr({
+			width:w,height:w
+		});
+		function minMaxValues(ds,col,val,type){
+			var max = d3.max(ds,function(d){return d[col];});
+			var min = d3.min(ds,function(d){return d[col];});
+			if(type==="minmax" && (val=== max || val===min)){
+				return val;
+			}
+			if(type==="all"){
+				return val;
+			}
+		}
+		var dots=svg.selectAll("circle")
+		// selecting all circle element 
+		.data(monthlySales)
+		// inserting the monthlysales data in it
+		.enter()
+		// create the element data
+		.append("circle")
+		// create the circle element
+		.attr({
+			cx:function(d){return d.month*3;},	
+			cy:function(d){return h-d.sales;},
+			r:5,
+			"fill":function(d){return salesKPI(d.sales);}
+		});
+		var labels=svg.selectAll("text")
+		.data(monthlySales)
+		.enter()
+		.append("text")
+		.text(function(d){
+			return minMaxValues(monthlySales,'sales',d.sales,"all");
+		})
+		.attr({
+			x:function(d){return (d.month*3)-25;},
+			y: function(d){return h-d.sales;},
+			"font-size":"12px",
+			"font-family":"sans-serif"
+	});
+		var lineFun=d3.svg.line()
+		.x(function(d){return d.month*3})
+		.y(function(d){return h-d.sales})
+		.interpolate("linear");
+		// this is the line which wil be drawn
+		// now the path is to be determined for the above line
+		var viz=svg.append("path")
+		.attr({
+			d:lineFun(monthlySales),
+			"stroke":"purple",
+			"stroke-width":2,
+			"fill":"none"
+		})
+		
+	</script>
+</body>
+</html>

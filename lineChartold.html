@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title></title>
+	<script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+	<link rel="stylesheet" href="">
+</head>
+<body>
+	<script>
+		var h=300; 
+		var w=500;
+		var monthSales=[
+		{"month":10,"sales":200},
+		{"month":20,"sales":130},
+		{"month":30,"sales":250},
+		{"month":40,"sales":60},
+		{"month":50,"sales":210},
+		{"month":60,"sales":150},
+		{"month":70,"sales":220},
+		{"month":80,"sales":90},
+		{"month":90,"sales":230},
+		{"month":100,"sales":70},
+		];
+		// a line creation function with the x and y coordinates and interpolation
+		var lineFun=d3.svg.line()
+		// creating a line drawing function
+		.x(function(d){return d.month*3;})
+		// giving the x coordinate
+		.y(function(d){ return h-d.sales;})
+		// giving the y coordinate
+		.interpolate("linear");
+		// telling the interpolation of the line
+		// creating a svg and a appending a path inside it with a width and height attribute
+		var svg=d3.select("body").append("svg").attr({
+			width:w,height:h
+		});
+		var viz=svg.append("path").attr({
+			d:lineFun(monthSales),
+			"stroke":"purple",
+			"stroke-width":2,
+			"fill":"none"
+		});
+		var labels =svg.selectAll("text")
+		.data(monthSales)
+		.enter()
+		.append("text")
+		.text(function(d){return d.sales;})
+		.attr({
+			x:function(d){return d.month*3-25;},
+	       	y:function(d){return h-d.sales;},
+	       	"color":"#fff",
+			"font-size":"12px",
+			"font-family":"sans-serif",
+			"text-anchor":"start"
+		})
+	</script>
+</body>
+</html>
